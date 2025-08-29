@@ -6,7 +6,7 @@ import { io } from "socket.io-client";
 const BASE_URL =
   import.meta.env.MODE === "development"
     ? "http://localhost:5001"
-    : "https://your-replit-project-name.your-username.repl.co";
+    : "https://c9093134-dfde-48fc-8111-d6c92a2aff0e-00-11l4cpgtjwwmj.sisko.replit.dev";
 
 
 export const useAuthStore = create((set, get) => ({
@@ -97,12 +97,13 @@ export const useAuthStore = create((set, get) => ({
     const { authUser } = get();
     if (!authUser || get().socket?.connected) return;
 
-    const socket = io(BASE_URL, {
+   const socket = io(BASE_URL, {
+  withCredentials: true,  // Add this line
   auth: {
-    token: authUser.token,   // send token with socket connection
+    token: authUser?.token,
   },
   query: {
-    userId: authUser._id,    // keep userId if your backend also needs it
+    userId: authUser?._id,
   },
 });
 
