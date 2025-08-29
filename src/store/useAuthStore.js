@@ -36,8 +36,10 @@ export const useAuthStore = create((set, get) => ({
       toast.success("Account created successfully");
       get().connectSocket();
     } catch (error) {
-      toast.error(error.response.data.message);
-    } finally {
+  const message = error?.response?.data?.message || error?.message || "Something went wrong";
+  toast.error(message);
+}
+ finally {
       set({ isSigningUp: false });
     }
   },
@@ -51,8 +53,10 @@ export const useAuthStore = create((set, get) => ({
 
       get().connectSocket();
     } catch (error) {
-      toast.error(error.response.data.message);
-    } finally {
+  const message = error?.response?.data?.message || error?.message || "Something went wrong";
+  toast.error(message);
+}
+ finally {
       set({ isLoggingIn: false });
     }
   },
@@ -64,8 +68,10 @@ export const useAuthStore = create((set, get) => ({
       toast.success("Logged out successfully");
       get().disconnectSocket();
     } catch (error) {
-      toast.error(error.response.data.message);
-    }
+  const message = error?.response?.data?.message || error?.message || "Something went wrong";
+  toast.error(message);
+}
+
   },
 
   updateProfile: async (data) => {
@@ -74,10 +80,11 @@ export const useAuthStore = create((set, get) => ({
       const res = await axiosInstance.put("/auth/update-profile", data);
       set({ authUser: res.data });
       toast.success("Profile updated successfully");
-    } catch (error) {
-      console.log("error in update profile:", error);
-      toast.error(error.response.data.message);
-    } finally {
+    }catch (error) {
+  const message = error?.response?.data?.message || error?.message || "Something went wrong";
+  toast.error(message);
+}
+ finally {
       set({ isUpdatingProfile: false });
     }
   },
