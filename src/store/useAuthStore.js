@@ -8,7 +8,6 @@ const BASE_URL =
     ? "http://localhost:5001"
     : "https://c9093134-dfde-48fc-8111-d6c92a2aff0e-00-11l4cpgtjwwmj.sisko.replit.dev";
 
-
 export const useAuthStore = create((set, get) => ({
   authUser: null,
   isSigningUp: false,
@@ -21,7 +20,6 @@ export const useAuthStore = create((set, get) => ({
   checkAuth: async () => {
     try {
       const res = await axiosInstance.get("/api/auth/check");
-
       set({ authUser: res.data });
       get().connectSocket();
     } catch (error) {
@@ -40,10 +38,9 @@ export const useAuthStore = create((set, get) => ({
       toast.success("Account created successfully");
       get().connectSocket();
     } catch (error) {
-  const message = error?.response?.data?.message || error?.message || "Something went wrong";
-  toast.error(message);
-}
- finally {
+      const message = error?.response?.data?.message || error?.message || "Something went wrong";
+      toast.error(message);
+    } finally {
       set({ isSigningUp: false });
     }
   },
@@ -54,13 +51,11 @@ export const useAuthStore = create((set, get) => ({
       const res = await axiosInstance.post("/api/auth/login", data);
       set({ authUser: res.data });
       toast.success("Logged in successfully");
-
       get().connectSocket();
     } catch (error) {
-  const message = error?.response?.data?.message || error?.message || "Something went wrong";
-  toast.error(message);
-}
- finally {
+      const message = error?.response?.data?.message || error?.message || "Something went wrong";
+      toast.error(message);
+    } finally {
       set({ isLoggingIn: false });
     }
   },
@@ -72,10 +67,9 @@ export const useAuthStore = create((set, get) => ({
       toast.success("Logged out successfully");
       get().disconnectSocket();
     } catch (error) {
-  const message = error?.response?.data?.message || error?.message || "Something went wrong";
-  toast.error(message);
-}
-
+      const message = error?.response?.data?.message || error?.message || "Something went wrong";
+      toast.error(message);
+    }
   },
 
   updateProfile: async (data) => {
@@ -84,38 +78,34 @@ export const useAuthStore = create((set, get) => ({
       const res = await axiosInstance.put("/api/auth/update-profile", data);
       set({ authUser: res.data });
       toast.success("Profile updated successfully");
-    }catch (error) {
-  const message = error?.response?.data?.message || error?.message || "Something went wrong";
-  toast.error(message);
-}
- finally {
+    } catch (error) {
+      const message = error?.response?.data?.message || error?.message || "Something went wrong";
+      toast.error(message);
+    } finally {
       set({ isUpdatingProfile: false });
     }
   },
 
   connectSocket: () => {
-    const { authUser } = get();
-    if (!authUser || get().socket?.connected) return;
+    const { authUser, socket: existingSocket } = get();
+    if (!authUser || existingSocket?.connected) return;
 
-   const socket = io(BASE_URL, {
-  withCredentials: true,  // Add this line
-  auth: {
-    token: authUser?.token,
-  },
-  query: {
-    userId: authUser?._id,
-  },
-});
-
-    socket.connect();
-
-    set({ socket: socket });
-
-    socket.on("getOnlineUsers", (userIds) => {
-      set({ onlineUsers: userIds });
+    const socket = io(BASE_URL, {
+      withCredentials: true,
+      auth: { token: authUser?.token },
+      query: { userId: authUser?._id },
     });
+
+    // Remove previous listener to avoid duplicates
+    socket.off("getOnlineUsers");
+    socket.on("getOnlineUsers", (userIds) => set({ onlineUsers: userIds }));
+
+    set({ socket });
   },
+
   disconnectSocket: () => {
-    if (get().socket?.connected) get().socket.disconnect();
+    const socket = get().socket;
+    if (socket?.connected) socket.disconnect();
+    set({ socket: null }); // Clear socket reference
   },
 }));
