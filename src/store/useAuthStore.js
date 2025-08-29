@@ -35,7 +35,7 @@ export const useAuthStore = create((set, get) => ({
     try {
       const res = await axiosInstance.post("/api/auth/signup", data);
       set({ authUser: res.data });
-      toast.success("Account created successfully");
+      toast.success("အကောင့်တည်ဆောက်ခြင်းအောင်မြင်သည်");
       get().connectSocket();
     } catch (error) {
       const message = error?.response?.data?.message || error?.message || "Something went wrong";
@@ -50,7 +50,7 @@ export const useAuthStore = create((set, get) => ({
     try {
       const res = await axiosInstance.post("/api/auth/login", data);
       set({ authUser: res.data });
-      toast.success("Logged in successfully");
+      toast.success("Log in ဝင်ပြီးပါပြီ");
       get().connectSocket();
     } catch (error) {
       const message = error?.response?.data?.message || error?.message || "Something went wrong";
@@ -64,7 +64,7 @@ export const useAuthStore = create((set, get) => ({
     try {
       await axiosInstance.post("/api/auth/logout");
       set({ authUser: null });
-      toast.success("Logged out successfully");
+      toast.success("Log out ထွက်လိုက်ပါပြီ");
       get().disconnectSocket();
     } catch (error) {
       const message = error?.response?.data?.message || error?.message || "Something went wrong";
@@ -77,7 +77,7 @@ export const useAuthStore = create((set, get) => ({
     try {
       const res = await axiosInstance.put("/api/auth/update-profile", data);
       set({ authUser: res.data });
-      toast.success("Profile updated successfully");
+      toast.success("ပရိုဖိုင်ပုံတင်ခြင်းအောင်မြင်သည်");
     } catch (error) {
       const message = error?.response?.data?.message || error?.message || "Something went wrong";
       toast.error(message);
