@@ -35,7 +35,9 @@ export const useAuthStore = create((set, get) => ({
     try {
       const res = await axiosInstance.post("/api/auth/signup", data);
       set({ authUser: res.data });
-      toast.success("အကောင့်တည်ဆောက်ခြင်းအောင်မြင်သည်");
+      setTimeout(() => {
+        toast.success("အကောင့်တည်ဆောက်ခြင်းအောင်မြင်သည်", {duration: 4000 });
+      }, 100);
       get().connectSocket();
     } catch (error) {
       const message = error?.response?.data?.message || error?.message || "Something went wrong";
